@@ -4,53 +4,67 @@ with staging as (
 
 ),
 
+fips_lookup as (
+
+    select
+        county_fips_code    as fips_st_cnty,
+        area_name           as county_name,
+        state_fips_code
+    from {{ source('census_utility', 'fips_codes_all') }}
+    where summary_level = '050'
+
+),
+
 final as (
 
     select
         -- Keys
-        fips_st_cnty,
-        release_year,
+        s.fips_st_cnty,
+        f.county_name,
+        f.state_fips_code,
+        s.release_year,
 
         -- Primary care supply
-        primary_care_mds,
-        primary_care_dos,
-        nurse_practitioners,
-        physician_assistants,
-        coalesce(primary_care_mds, 0) + coalesce(primary_care_dos, 0)
-            + coalesce(nurse_practitioners, 0) + coalesce(physician_assistants, 0)
+        s.primary_care_mds,
+        s.primary_care_dos,
+        s.nurse_practitioners,
+        s.physician_assistants,
+        coalesce(s.primary_care_mds, 0) + coalesce(s.primary_care_dos, 0)
+            + coalesce(s.nurse_practitioners, 0) + coalesce(s.physician_assistants, 0)
             as total_primary_care_providers,
 
         -- Safety net facilities
-        fqhcs,
-        community_health_centers,
-        rural_health_clinics,
-        critical_access_hospitals,
+        s.fqhcs,
+        s.community_health_centers,
+        s.rural_health_clinics,
+        s.critical_access_hospitals,
 
         -- Demand / need indicators
-        population,
-        population_65plus,
-        pct_below_poverty,
-        pct_uninsured_under65,
-        unemployment_rate,
-        median_household_income,
+        s.population,
+        s.population_65plus,
+        s.pct_below_poverty,
+        s.pct_uninsured_under65,
+        s.unemployment_rate,
+        s.median_household_income,
 
         -- Derived: providers per 10k population
         case
-            when population > 0
+            when s.population > 0
             then round(
-                (coalesce(primary_care_mds, 0) + coalesce(primary_care_dos, 0)
-                + coalesce(nurse_practitioners, 0) + coalesce(physician_assistants, 0))
-                / population * 10000, 2)
+                (coalesce(s.primary_care_mds, 0) + coalesce(s.primary_care_dos, 0)
+                + coalesce(s.nurse_practitioners, 0) + coalesce(s.physician_assistants, 0))
+                / s.population * 10000, 2)
             else null
         end as primary_care_providers_per_10k,
 
         -- Other providers
-        dentists_private_practice,
-        psychiatrists,
-        hospital_beds,
-        short_term_gen_hospitals
+        s.dentists_private_practice,
+        s.psychiatrists,
+        s.hospital_beds,
+        s.short_term_gen_hospitals
 
-    from staging
+    from staging s
+    left join fips_lookup f on s.fips_st_cnty = f.fips_st_cnty
 
 )
 

@@ -10,6 +10,8 @@ A batch data pipeline analyzing primary care access gaps and underserved populat
 
 FQHCs and health planners need county-level visibility into primary care supply relative to population need. This pipeline ingests three release years of AHRF data (2022–2023, 2023–2024, 2024–2025), transforms it into an analytical fact table, and surfaces access metrics in a dashboard; enabling comparison of provider density, uninsurance rates, and poverty concentration across counties over time.
 
+This project was built with direct relevance to my work at a Federally Qualified Health Center serving the Columbia River Gorge region, including one of Oregon's largest migrant and seasonal farmworker populations. FQHCs like mine operate in federally designated Health Professional Shortage Areas and Medically Underserved Areas; the same designations derived from AHRF data. Understanding county-level primary care supply relative to population directly informs where safety net providers are needed most.
+
 ---
 
 ## Architecture
@@ -192,4 +194,4 @@ Connect Looker Studio to BigQuery → `ahrf_raw.fact_primary_care_access`.
 
 ## Dashboard
 
-[Looker Studio Dashboard](#) ← replace with your link after publishing
+https://datastudio.google.com/s/kquC1pw8cDc

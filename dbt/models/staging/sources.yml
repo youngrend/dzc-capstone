@@ -8,3 +8,10 @@ sources:
       - name: ahrf_2022_2023
       - name: ahrf_2023_2024
       - name: ahrf_2024_2025
+
+  - name: census_utility
+    database: bigquery-public-data
+    schema: census_utility
+    tables:
+
+      - name: fips_codes_all
