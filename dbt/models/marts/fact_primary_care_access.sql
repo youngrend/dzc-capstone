@@ -10,7 +10,7 @@ fips_lookup as (
         county_fips_code    as fips_st_cnty,
         area_name           as county_name,
         state_fips_code
-    from {{ source('census_utility', 'fips_codes_all') }}
+        from {{ source('fips_lookup', 'fips_codes_all') }}
     where summary_level = '050'
 
 ),
@@ -64,8 +64,6 @@ final as (
         s.short_term_gen_hospitals
 
     from staging s
-    left join fips_lookup f on s.fips_st_cnty = f.fips_st_cnty
-
-)
+left join fips_lookup f on LPAD(s.fips_st_cnty, 5, '0') = f.fips_st_cnty)
 
 select * from final

@@ -9,9 +9,8 @@ sources:
       - name: ahrf_2023_2024
       - name: ahrf_2024_2025
 
-  - name: census_utility
-    database: bigquery-public-data
-    schema: census_utility
+  - name: fips_lookup
+    database: de-zoomcamp-2026-487709
+    schema: ahrf_raw
     tables:
-
       - name: fips_codes_all
