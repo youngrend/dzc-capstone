@@ -1,0 +1,45 @@
+id: ahrf_ingest
+namespace: ahrf
+
+description: |
+  Annual ingestion of AHRF county-level CSVs.
+  Reads HP, HF, POP category files for each release year,
+  joins on FIPS, writes Parquet to GCS, loads to BigQuery.
+
+triggers:
+  - id: annual
+    type: io.kestra.plugin.core.trigger.Schedule
+    cron: "0 6 1 1 *"  # Jan 1 at 6am
+
+tasks:
+  - id: ingest
+    type: io.kestra.plugin.scripts.python.Commands
+    taskRunner:
+      type: io.kestra.plugin.core.runner.Process
+    env:
+      GCS_BUCKET_NAME: ahrf-raw-dy
+      GCP_PROJECT_ID: de-zoomcamp-2026-487709
+    beforeCommands:
+      - pip install pandas pyarrow google-cloud-storage python-dotenv -q
+    commands:
+      - python /opt/capstone/ingestion/ingest_ahrf.py
+
+  - id: log_ingest_complete
+    type: io.kestra.plugin.core.log.Log
+    message: "AHRF ingest complete - parquet to GCS {{ trigger.date ?? execution.startDate }}"
+
+  - id: load_to_big_query
+    type: io.kestra.plugin.scripts.python.Commands
+    taskRunner:
+      type: io.kestra.plugin.core.runner.Process
+    env:
+      GCS_BUCKET_NAME: ahrf-raw-dy
+      GCP_PROJECT_ID: de-zoomcamp-2026-487709
+    beforeCommands:
+      - pip install google-cloud-bigquery python-dotenv -q
+    commands:
+      - python /opt/capstone/ingestion/load_bq.py
+    
+  - id: log_complete
+    type: io.kestra.plugin.core.log.Log
+    message: "BQ Load complete - ahrf_raw tables updated {{ trigger.date ?? execution.startDate }}"
