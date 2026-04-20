@@ -1,3 +1,12 @@
+{{ config(
+    materialized='table',
+    partition_by={
+      "field": "release_year",
+      "data_type": "string"
+    },
+    cluster_by=["fips_st_cnty"]
+) }}
+
 with staging as (
 
     select * from {{ ref('stg_ahrf') }}
