@@ -19,7 +19,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /tmp/kestra-wd:/tmp/kestra-wd
       - ~/projects/dzc-capstone:/opt/capstone
-      
+      - ~/.config/gcloud:/home/kestra/.config/gcloud:ro  
     environment:
       KESTRA_CONFIGURATION: |
         datasources:

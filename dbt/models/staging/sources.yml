@@ -1,0 +1,10 @@
+version: 2
+
+sources:
+  - name: ahrf_raw
+    database: de-zoomcamp-2026-487709
+    schema: ahrf_raw
+    tables:
+      - name: ahrf_2022_2023
+      - name: ahrf_2023_2024
+      - name: ahrf_2024_2025
