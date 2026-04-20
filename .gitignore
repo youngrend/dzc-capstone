@@ -1,0 +1,29 @@
+# Environment
+.env
+
+# Data files
+data/
+*.parquet
+*.csv
+
+# Kestra storage
+kestra/kestra-storage/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Terraform state
+terraform/.terraform/
+terraform/*.tfstate
+terraform/*.tfstate.backup
+terraform/.terraform.lock.hcl
+
+# Mac
+.DS_Store
+
+# AHRF raw data
+*.zip
+AHRF*/
